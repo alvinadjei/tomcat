@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mouse Trap</title>
-</head>
-<body>
-    <p>Hello, World!</p>
-    {% comment %} <img src="{{ image_url }}" alt="Dynamic Image"> {% endcomment %}
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mouse Trap</title>
+    </head>
+    <body>
+        <h1>Live Stream</h1>
+        <div>
+            <img src="{{ url_for('video') }}" alt="Live Stream">
+        </div>
+    </body>
 </html>
