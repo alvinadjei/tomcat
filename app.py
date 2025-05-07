@@ -25,6 +25,7 @@ def generate_frames():
     
     # Keep track of the number of frames in a row with motion
     motion_counter = 0  # Number of frames with motion
+    motion_threshold = 5  # Number of frames to trigger recording
     recording = False  # Flag to indicate if recording is in progress
     out = None  # VideoWriter object for saving video
 
@@ -56,7 +57,7 @@ def generate_frames():
             motion_counter = 0  # Reset motion counter if no motion detected
         
         # Start recording if motion persists
-        if motion_counter >= 15 and not recording:
+        if motion_counter >= motion_threshold and not recording:
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = os.path.join(SAVE_DIR, f"{timestamp}.avi")
             out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), 20, (frame.shape[1], frame.shape[0]))
