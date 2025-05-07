@@ -1,6 +1,7 @@
 from flask import Flask, Response, render_template
-import numpy as np
 import cv2
+import os
+import datetime
 
 app = Flask(__name__)
 
@@ -17,6 +18,16 @@ def generate_frames():
     if not ret:
         return
     prev_gray = cv2.cvtColor(prev_frame, cv2.COLOR_BGR2GRAY)
+    
+    SAVE_DIR = "recordings"
+    os.makedirs(SAVE_DIR, exist_ok=True)
+
+    
+    # Keep track of the number of frames in a row with motion
+    motion_counter = 0  # Number of frames with motion
+    recording = False  # Flag to indicate if recording is in progress
+    out = None  # VideoWriter object for saving video
+
     
     while True:
         # Capture frame-by-frame
@@ -40,14 +51,29 @@ def generate_frames():
         motion_score = cv2.countNonZero(thresh)
         if motion_score > 4000:  # You can tune this threshold
             cv2.putText(frame, "Motion Detected!", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            motion_counter += 1  # Increment motion counter
+        else:
+            motion_counter = 0  # Reset motion counter if no motion detected
+        
+        # Start recording if motion persists
+        if motion_counter >= 15 and not recording:
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = os.path.join(SAVE_DIR, f"{timestamp}.avi")
+            out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), 20, (frame.shape[1], frame.shape[0]))
+            recording = True
+            
+        # Write frame to video if recording
+        if recording:
+            out.write(frame)
+
+            # Stop recording after motion ends
+            if motion_counter == 0:
+                out.release()
+                recording = False
+                # save_video_metadata_to_db(filename)
         
         # Update prev_gray
         prev_gray = gray
-        
-        # # Resize the frame to a smaller size for faster transmission
-        # frame = cv2.resize(frame, (640, 480))
-        # # Convert the frame to RGB format
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Encode the frame in JPEG format
         ret, buffer = cv2.imencode('.jpg', frame)
