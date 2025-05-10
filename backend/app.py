@@ -1,10 +1,17 @@
 from flask import Flask, Response, render_template
+from flask_cors import CORS
+from supabase import create_client
 import cv2
 import os
 import datetime
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
+# SUPABASE_URL = "https://your-project.supabase.co"
+# SUPABASE_KEY = "your-secret-service-role-key"
+
+# supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def generate_frames():
     """Video streaming generator function."""
@@ -71,7 +78,14 @@ def generate_frames():
             if motion_counter == 0:
                 out.release()
                 recording = False
-                # save_video_metadata_to_db(filename)
+                
+                # # Upload to Supabase Storage
+                # with open(filename, "rb") as f:
+                #     file_data = f.read()
+                #     supabase.storage.from_("recordings").upload(f"videos/{os.path.basename(filename)}", file_data)
+
+                # # Optional: delete local copy
+                # os.remove(filename)
         
         # Update prev_gray
         prev_gray = gray
@@ -89,10 +103,8 @@ def generate_frames():
 
 @app.route('/')
 def index():
-    """Video streaming home page."""
-    # Render the HTML template
-    return render_template('index.html')
-
+    """Video streaming confrirmation for debugging"""
+    return {"status": "Backend running", "video_url": "/video"}
 
 @app.route('/video')
 def video():
@@ -103,4 +115,4 @@ def video():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)  # host='0.0.0.0', port=5000
+    app.run(host='0.0.0.0', port=5000, debug=True)
