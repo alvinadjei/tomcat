@@ -4,12 +4,19 @@ from supabase import create_client
 import cv2
 import os
 import datetime
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Load environment variables
-SUPABASE_URL, SUPABASE_KEY = os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY")
+load_dotenv()
+
+# Load environment variables from .env file
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# Initialize Supabase client
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def generate_frames():
@@ -83,7 +90,7 @@ def generate_frames():
                     file_data = f.read()
                     supabase.storage.from_("recordings").upload(f"recordings/{os.path.basename(filename)}", file_data)
 
-                # Optional: delete local copy
+                # Delete local copy
                 os.remove(filename)
         
         # Update prev_gray
