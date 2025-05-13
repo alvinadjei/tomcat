@@ -1,4 +1,5 @@
 import './App.css';
+import { Link } from 'react-router-dom';
 
 function App() {
   return (
@@ -9,6 +10,12 @@ function App() {
         alt="Mouse Cam"
         style={{ width: '60%', border: '2px solid #ccc' }}
       />
+      <br />
+      <Link to="/recordings">
+        <button style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px' }}>
+          View Recordings
+        </button>
+      </Link>
     </div>
   );
 }

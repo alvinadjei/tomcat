@@ -1,2 +1,7 @@
+# Backend
 backend/.venv/
-recordings/
+backend/.env/
+backend/recordings/
+
+# Frontend
+frontend/.env/

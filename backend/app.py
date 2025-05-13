@@ -8,10 +8,9 @@ import datetime
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# SUPABASE_URL = "https://your-project.supabase.co"
-# SUPABASE_KEY = "your-secret-service-role-key"
-
-# supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+# Load environment variables
+SUPABASE_URL, SUPABASE_KEY = os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def generate_frames():
     """Video streaming generator function."""
@@ -79,13 +78,13 @@ def generate_frames():
                 out.release()
                 recording = False
                 
-                # # Upload to Supabase Storage
-                # with open(filename, "rb") as f:
-                #     file_data = f.read()
-                #     supabase.storage.from_("recordings").upload(f"videos/{os.path.basename(filename)}", file_data)
+                # Upload to Supabase Storage
+                with open(filename, "rb") as f:
+                    file_data = f.read()
+                    supabase.storage.from_("recordings").upload(f"recordings/{os.path.basename(filename)}", file_data)
 
-                # # Optional: delete local copy
-                # os.remove(filename)
+                # Optional: delete local copy
+                os.remove(filename)
         
         # Update prev_gray
         prev_gray = gray
