@@ -12,7 +12,7 @@ function App() {
       />
       <br />
       <Link to="/recordings">
-        <button style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px' }}>
+        <button> {/* style={{ marginTop: '20px', padding: '10px 20px', fontSize: '16px' }} */}
           View Recordings
         </button>
       </Link>

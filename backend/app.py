@@ -85,10 +85,10 @@ def generate_frames():
                 out.release()
                 recording = False
                 
-                # Upload to Supabase Storage
-                with open(filename, "rb") as f:
-                    file_data = f.read()
-                    supabase.storage.from_("recordings").upload(f"recordings/{os.path.basename(filename)}", file_data)
+                # # Upload to Supabase Storage
+                # with open(filename, "rb") as f:
+                #     file_data = f.read()
+                #     supabase.storage.from_("recordings").upload(f"recordings/{os.path.basename(filename)}", file_data)
 
                 # Delete local copy
                 os.remove(filename)

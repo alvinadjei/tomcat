@@ -1,0 +1,8 @@
+.video-selector {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  
+}
