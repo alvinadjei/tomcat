@@ -76,14 +76,14 @@ def generate_frames():
             out = cv2.VideoWriter(filename, cv2.VideoWriter_fourcc(*'XVID'), 20, (frame.shape[1], frame.shape[0]))
             recording = True
             
-        # Write frame to video if recording
-        if recording:
-            out.write(frame)
+        # # Write frame to video if recording
+        # if recording:
+        #     out.write(frame)
 
-            # Stop recording after motion ends
-            if motion_counter == 0:
-                out.release()
-                recording = False
+        #     # Stop recording after motion ends
+        #     if motion_counter == 0:
+        #         out.release()
+        #         recording = False
                 
                 # # Upload to Supabase Storage
                 # with open(filename, "rb") as f:
@@ -91,7 +91,7 @@ def generate_frames():
                 #     supabase.storage.from_("recordings").upload(f"recordings/{os.path.basename(filename)}", file_data)
 
                 # Delete local copy
-                os.remove(filename)
+                # os.remove(filename)
         
         # Update prev_gray
         prev_gray = gray
