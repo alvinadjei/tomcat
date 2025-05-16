@@ -5,7 +5,7 @@ void setup() {
   Serial.begin(9600);
 }
 
-running = false;
+bool running = true;
 
 void loop() {
 
@@ -13,14 +13,18 @@ void loop() {
     char command = Serial.read();
     
     // Command to toggle houselight
-    if (command == 's') { 
-      running = !running; // toggle pixOn bool
-      if (running) {
-        // put your main code here, to run repeatedly:
-        int sensorValue = analogRead(analogPin);  // Read the analog input (0-1023)
-        Serial.println(sensorValue);              // Print the value to the Serial Monitor
-        delay(50);                                // Measure 20 times per second
-      }
+    if (command == 'start') { 
+      running = true; // toggle pixOn bool
+    } else if (command = 'stop') {
+      running = false;
     }
+  }
+
+  // If python script is running, send vibration sensor data
+  if (running) {
+    // put your main code here, to run repeatedly:
+    int sensorValue = analogRead(SENSOR_PIN);  // Read the analog input (0-1023)
+    Serial.println(sensorValue);              // Print the value to the Serial Monitor
+    delay(50);                                // Measure 20 times per second
   }
 }
