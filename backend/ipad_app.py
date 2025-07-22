@@ -43,6 +43,12 @@ motion_score_lock = threading.Lock()  # Lock for the motion score
 latest_motion_active = False
 motion_active_lock = threading.Lock()  # Lock for the motion active variable
 
+# Number of pixels to detect movement
+motion_thresh = 30000
+
+# Number of pixels moving when the lights are on because this camera costs 20 bucks and has weird ripples
+lights_on_thresh = 360000
+
 # Create queues
 upload_queue = queue.Queue()  # Video upload queue
 
@@ -63,7 +69,7 @@ def camera_thread():
     max_frames = 300  # Maximum number of frames to record, rougly 10 seconds at 30 FPS
     motion_active = False
     motion_grace_counter = 0
-    motion_grace_threshold = 10  # frames of "no motion" before we consider motion stopped
+    motion_grace_threshold = 100  # frames of "no motion" before we consider motion stopped
 
     
     # Open a connection to the webcam (0 is the default camera)
@@ -112,7 +118,7 @@ def camera_thread():
             latest_motion_score = motion_score
             
         # Increment motion_counter if frames are changing
-        if motion_score >= 1000:
+        if motion_thresh <= motion_score < lights_on_thresh or motion_score >= lights_on_thresh + motion_thresh:
             motion_counter += 1
             motion_grace_counter = 0
             
@@ -197,8 +203,10 @@ def live_stream():
         if motion_score is None:  # Skip if no motion score is available
             continue
         
-        if motion_score > 4000:  # You can tune this threshold
-            cv2.putText(frame, f"Motion Detected:{motion_score}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+        cv2.putText(frame, f"Motion Score:{motion_score}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+        
+        if motion_thresh <= motion_score < lights_on_thresh or motion_score >= lights_on_thresh + motion_thresh:  # You can tune this threshold
+            cv2.putText(frame, f"Motion Detected:{motion_score}", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
         # Encode the frame in JPEG format
         _, buffer = cv2.imencode('.jpg', frame)
