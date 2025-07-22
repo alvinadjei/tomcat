@@ -182,10 +182,16 @@ def uploader_thread():
                     file_options={"content-type": "video/x-msvideo"}
                 )
             print(f"✅ Uploaded: {filename}")
+        except Exception as e:
+            print(f"Upload failed for {filename}: {e}")
+            continue
+            
+        # Separate try block for deletion
+        try:
             os.remove(filename)
             print(f"🧹 Deleted local file: {filename}")
         except Exception as e:
-            print(f"Upload failed for {filename}: {e}")
+            print(f"Failed to delete {filename}: {e}")
 
 
 def live_stream():
